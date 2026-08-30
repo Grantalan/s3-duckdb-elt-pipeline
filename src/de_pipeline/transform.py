@@ -68,7 +68,7 @@ def customer_order_summary(con: duckdb.DuckDBPyConnection) -> int:
         """
     )
     return con.execute("SELECT count(*) FROM customer_order_summary").fetchone()[0]
-    raise NotImplementedError("Day 2/3: implement customer_order_summary()")
+
 
 def run_transforms(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     """Run every transform in order and return ``{table_name: row_count}``."""

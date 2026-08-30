@@ -209,6 +209,22 @@ they say `skipped` before you've started RustFS and seeded the data.
 
 ### Your notes (fill in on Day 3)
 
-- What does your pipeline produce?
-- One thing that was messier than expected:
-- One thing you'd improve with more time:
+- **What does your pipeline produce?**
+  This is an ELT pipeline using RustFS and an S3 `boto3` client to load, then
+  transform data with declarative DuckDB SQL commands, instantiated via the
+  Docker CLI and `uv sync`. It produces cleaned and transformed tables in
+  DuckDB.
+
+- **One thing that was messier than expected:**
+  Pulling down the RustFS data with an S3 client was difficult, once I read
+  the documentation it became more intuitive. Also, type hints mixed with
+  table summaries can be difficult to read. Lastly, using a placeholder in
+  `read_csv_auto(?)` as `?` is confusing but makes more sense after reading
+  the DuckDB CSV documentation. The DB API docs for `sqlite3` were very
+  helpful for `load.py`.
+
+- **One thing you'd improve with more time:**
+  Mount additional subdirectories for other data storage and visualization.
+  I'd like to add additional hurdles in `generate_data.py` to make the data
+  more difficult to normalize. Lastly, I would like to implement tests for
+  the S3 client to create a more secure connection.
