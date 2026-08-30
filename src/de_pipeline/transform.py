@@ -29,15 +29,46 @@ def clean_orders(con: duckdb.DuckDBPyConnection) -> int:
     normalize ``status`` to lower-case with surrounding spaces removed, add a
     ``line_total`` column (quantity * price), and drop rows that are missing a
     quantity or price."""
-    raise NotImplementedError("Day 2/3: implement clean_orders()")
+    con.execute(
+        """
+        CREATE OR REPLACE TABLE clean_orders AS
+        SELECT
+            order_id,
+            customer_id,
+            sku,
+            quantity,
+            price,
+            lower(trim(status)) AS status,
+            strptime(order_date, '%d-%b-%Y')::DATE AS order_date,
+            quantity * price AS line_total
+        FROM raw_orders
+        WHERE quantity IS NOT NULL
+          AND price IS NOT NULL
+        """
+    )
+    return con.execute("SELECT count(*) FROM clean_orders").fetchone()[0]
 
 
 def customer_order_summary(con: duckdb.DuckDBPyConnection) -> int:
     """Build a ``customer_order_summary`` table with one row per customer —
     ``customer_id``, ``name``, ``order_count``, ``total_revenue`` — by joining
     ``clean_orders`` to ``raw_customers``. Return its row count."""
-    raise NotImplementedError("Day 2/3: implement customer_order_summary()")
 
+    con.execute(
+        """
+        CREATE OR REPLACE TABLE customer_order_summary AS
+        SELECT
+            c.customer_id,
+            c.name,
+            count(o.order_id) AS order_count,
+            sum(o.line_total) AS total_revenue
+        FROM raw_customers AS c
+        JOIN clean_orders AS o ON o.customer_id = c.customer_id
+        GROUP BY c.customer_id, c.name
+        """
+    )
+    return con.execute("SELECT count(*) FROM customer_order_summary").fetchone()[0]
+    raise NotImplementedError("Day 2/3: implement customer_order_summary()")
 
 def run_transforms(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     """Run every transform in order and return ``{table_name: row_count}``."""
