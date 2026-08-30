@@ -17,6 +17,9 @@ de-pipeline = "de_pipeline.pipeline:main"
 requires = ["uv_build>=0.8.13,<0.9.0"]
 build-backend = "uv_build"
 
+[tool.uv.build-backend]
+module-name = "de_pipeline"
+
 [dependency-groups]
 dev = [
     "pytest>=9.1.0",
