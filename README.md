@@ -1,6 +1,6 @@
 # s3-duckdb-elt-pipeline
 
-Week 1 — Your First Data Pipeline
+Week 1 — Your First ELT Pipeline
 
 Welcome to Intro to Data Engineering. This week you build a small but real
 pipeline: pull raw files out of object storage (S3), land them in an analytical
