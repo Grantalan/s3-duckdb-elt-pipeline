@@ -72,4 +72,7 @@ def customer_order_summary(con: duckdb.DuckDBPyConnection) -> int:
 
 def run_transforms(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     """Run every transform in order and return ``{table_name: row_count}``."""
-    raise NotImplementedError("Day 2/3: implement run_transforms()")
+    return {
+        "clean_orders": clean_orders(con),
+        "customer_order_summary": customer_order_summary(con),
+    }
