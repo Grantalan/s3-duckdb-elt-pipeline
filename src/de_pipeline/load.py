@@ -29,24 +29,49 @@ DB_PATH = Path("data/warehouse.duckdb")
 def connect(db_path: Path = DB_PATH) -> duckdb.DuckDBPyConnection:
     """Open (creating it if needed) the DuckDB database at ``db_path`` and return
     the connection."""
+
+    return duckdb.connect(str(db_path))
+
     raise NotImplementedError("Day 2: implement connect()")
 
 
 def load_orders(con: duckdb.DuckDBPyConnection, raw_dir: Path = RAW_DIR) -> int:
     """Load ``raw_dir/orders.csv`` into a table named ``raw_orders``. Return the
     number of rows loaded."""
+
+    csv_path = raw_dir / "orders.csv"
+    con.execute(
+        "CREATE OR REPLACE TABLE raw_orders AS SELECT * FROM read_csv_auto(?)",
+        [str(csv_path)],
+    )
+    return con.execute("SELECT COUNT(*) FROM raw_orders").fetchone()[0]
+
     raise NotImplementedError("Day 2: implement load_orders()")
 
 
 def load_customers(con: duckdb.DuckDBPyConnection, raw_dir: Path = RAW_DIR) -> int:
     """Load ``raw_dir/customers.json`` into a table named ``raw_customers``.
     Return the number of rows loaded."""
+
+    json_path = raw_dir / "customers.json"
+    con.execute(
+        "CREATE OR REPLACE TABLE raw_customers AS SELECT * FROM read_json_auto(?)",
+        [str(json_path)],
+    )
+    return con.execute("SELECT COUNT(*) FROM raw_customers").fetchone()[0]
+
     raise NotImplementedError("Day 2: implement load_customers()")
 
 
 def load_all(con: duckdb.DuckDBPyConnection, raw_dir: Path = RAW_DIR) -> dict[str, int]:
     """Load both files and return ``{table_name: row_count}`` — i.e.
     ``{"raw_orders": ..., "raw_customers": ...}``."""
+
+    return {
+        "raw_orders": load_orders(con, raw_dir),
+        "raw_customers": load_customers(con, raw_dir),
+    }
+
     raise NotImplementedError("Day 2: implement load_all()")
 
 
